@@ -14,16 +14,452 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      calendar_events: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          end_date: string | null
+          id: string
+          start_date: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          start_date: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          start_date?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      course_materials: {
+        Row: {
+          course_id: string
+          created_at: string
+          description: string | null
+          external_link: string | null
+          file_url: string | null
+          id: string
+          title: string
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          description?: string | null
+          external_link?: string | null
+          file_url?: string | null
+          id?: string
+          title: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          description?: string | null
+          external_link?: string | null
+          file_url?: string | null
+          id?: string
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_materials_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      courses: {
+        Row: {
+          code: string
+          created_at: string
+          description: string | null
+          id: string
+          level: Database["public"]["Enums"]["course_level"]
+          semester: Database["public"]["Enums"]["semester"]
+          title: string
+          units: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          level: Database["public"]["Enums"]["course_level"]
+          semester?: Database["public"]["Enums"]["semester"]
+          title: string
+          units?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          level?: Database["public"]["Enums"]["course_level"]
+          semester?: Database["public"]["Enums"]["semester"]
+          title?: string
+          units?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      events: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          event_date: string
+          id: string
+          is_published: boolean
+          register_link: string | null
+          title: string
+          updated_at: string
+          venue: string | null
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          event_date: string
+          id?: string
+          is_published?: boolean
+          register_link?: string | null
+          title: string
+          updated_at?: string
+          venue?: string | null
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          id?: string
+          is_published?: boolean
+          register_link?: string | null
+          title?: string
+          updated_at?: string
+          venue?: string | null
+        }
+        Relationships: []
+      }
+      executives: {
+        Row: {
+          bio: string | null
+          created_at: string
+          display_order: number
+          email: string | null
+          id: string
+          instagram: string | null
+          is_current: boolean
+          linkedin: string | null
+          name: string
+          photo_url: string | null
+          role: string
+          term: string | null
+          twitter: string | null
+          updated_at: string
+          whatsapp: string | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          display_order?: number
+          email?: string | null
+          id?: string
+          instagram?: string | null
+          is_current?: boolean
+          linkedin?: string | null
+          name: string
+          photo_url?: string | null
+          role: string
+          term?: string | null
+          twitter?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          display_order?: number
+          email?: string | null
+          id?: string
+          instagram?: string | null
+          is_current?: boolean
+          linkedin?: string | null
+          name?: string
+          photo_url?: string | null
+          role?: string
+          term?: string | null
+          twitter?: string | null
+          updated_at?: string
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
+      gallery_albums: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          description: string | null
+          event_date: string | null
+          id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          event_date?: string | null
+          id?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string | null
+          event_date?: string | null
+          id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      gallery_photos: {
+        Row: {
+          album_id: string
+          caption: string | null
+          created_at: string
+          display_order: number
+          id: string
+          photo_url: string
+        }
+        Insert: {
+          album_id: string
+          caption?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          photo_url: string
+        }
+        Update: {
+          album_id?: string
+          caption?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          photo_url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gallery_photos_album_id_fkey"
+            columns: ["album_id"]
+            isOneToOne: false
+            referencedRelation: "gallery_albums"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      membership_signups: {
+        Row: {
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          is_processed: boolean
+          level: Database["public"]["Enums"]["course_level"] | null
+          matric_number: string | null
+          message: string | null
+          phone: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          is_processed?: boolean
+          level?: Database["public"]["Enums"]["course_level"] | null
+          matric_number?: string | null
+          message?: string | null
+          phone?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          is_processed?: boolean
+          level?: Database["public"]["Enums"]["course_level"] | null
+          matric_number?: string | null
+          message?: string | null
+          phone?: string | null
+        }
+        Relationships: []
+      }
+      news: {
+        Row: {
+          content: string
+          cover_url: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          is_published: boolean
+          published_at: string
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          is_published?: boolean
+          published_at?: string
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          is_published?: boolean
+          published_at?: string
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          assigned_level: Database["public"]["Enums"]["course_level"] | null
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assigned_level?: Database["public"]["Enums"]["course_level"] | null
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assigned_level?: Database["public"]["Enums"]["course_level"] | null
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      suggestions: {
+        Row: {
+          category: string | null
+          created_at: string
+          id: string
+          is_read: boolean
+          message: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          message?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_level: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["course_level"]
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "exec" | "course_rep"
+      course_level: "100" | "200" | "300" | "400"
+      semester: "first" | "second"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +586,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "exec", "course_rep"],
+      course_level: ["100", "200", "300", "400"],
+      semester: ["first", "second"],
+    },
   },
 } as const
