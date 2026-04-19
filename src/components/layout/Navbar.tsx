@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { LayoutDashboard, LogIn, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/hooks/useAuth";
 
 const navItems = [
   { to: "/", label: "Home" },
@@ -18,6 +19,7 @@ export const Navbar = () => {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const isHome = location.pathname === "/";
+  const { user } = useAuth();
 
   return (
     <header
@@ -58,6 +60,15 @@ export const Navbar = () => {
         </nav>
 
         <div className="hidden lg:flex items-center gap-2">
+          {user ? (
+            <Button asChild variant="outline" size="sm">
+              <Link to="/dashboard"><LayoutDashboard className="h-4 w-4 mr-1" /> Dashboard</Link>
+            </Button>
+          ) : (
+            <Button asChild variant="ghost" size="sm">
+              <Link to="/auth"><LogIn className="h-4 w-4 mr-1" /> Sign in</Link>
+            </Button>
+          )}
           <Button asChild variant="hero" size="sm">
             <Link to="/contact">Join NACOS</Link>
           </Button>
@@ -93,6 +104,19 @@ export const Navbar = () => {
                 {item.label}
               </NavLink>
             ))}
+            {user ? (
+              <Button asChild variant="outline" size="sm" className="mt-2">
+                <Link to="/dashboard" onClick={() => setOpen(false)}>
+                  <LayoutDashboard className="h-4 w-4 mr-1" /> Dashboard
+                </Link>
+              </Button>
+            ) : (
+              <Button asChild variant="ghost" size="sm" className="mt-2">
+                <Link to="/auth" onClick={() => setOpen(false)}>
+                  <LogIn className="h-4 w-4 mr-1" /> Sign in
+                </Link>
+              </Button>
+            )}
             <Button asChild variant="hero" size="sm" className="mt-2">
               <Link to="/contact" onClick={() => setOpen(false)}>Join NACOS</Link>
             </Button>
