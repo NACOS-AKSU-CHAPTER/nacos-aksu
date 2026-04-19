@@ -11,47 +11,47 @@
 
 @layer base {
   :root {
-    --background: 40 33% 98%;
-    --foreground: 222 47% 11%;
+    --background: 0 0% 100%;
+    --foreground: 150 30% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 150 30% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 150 30% 10%;
 
-    /* Deep navy */
-    --primary: 222 65% 18%;
-    --primary-foreground: 40 33% 98%;
-    --primary-glow: 222 70% 32%;
+    /* NACOS Green */
+    --primary: 145 75% 22%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 145 65% 35%;
 
-    --secondary: 222 30% 95%;
-    --secondary-foreground: 222 65% 18%;
+    --secondary: 145 25% 95%;
+    --secondary-foreground: 145 75% 22%;
 
-    --muted: 222 20% 95%;
-    --muted-foreground: 222 15% 42%;
+    --muted: 145 15% 95%;
+    --muted-foreground: 150 10% 40%;
 
-    /* Warm gold accent */
-    --accent: 38 85% 52%;
-    --accent-foreground: 222 65% 18%;
-    --accent-soft: 38 85% 94%;
+    /* Bright green accent */
+    --accent: 142 70% 42%;
+    --accent-foreground: 0 0% 100%;
+    --accent-soft: 142 60% 94%;
 
     --destructive: 0 72% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 222 20% 88%;
-    --input: 222 20% 88%;
-    --ring: 222 65% 18%;
+    --border: 145 15% 88%;
+    --input: 145 15% 88%;
+    --ring: 145 75% 22%;
 
     --radius: 0.75rem;
 
     /* Gradients & shadows */
-    --gradient-hero: linear-gradient(135deg, hsl(222 70% 14%), hsl(222 65% 22%) 60%, hsl(222 60% 30%));
-    --gradient-accent: linear-gradient(135deg, hsl(38 85% 52%), hsl(35 90% 60%));
-    --gradient-soft: linear-gradient(180deg, hsl(40 33% 98%), hsl(222 30% 96%));
-    --shadow-elegant: 0 10px 40px -10px hsl(222 65% 18% / 0.18);
-    --shadow-card: 0 4px 20px -4px hsl(222 65% 18% / 0.08);
-    --shadow-glow: 0 0 60px hsl(38 85% 52% / 0.25);
+    --gradient-hero: linear-gradient(135deg, hsl(145 80% 14%), hsl(145 70% 22%) 60%, hsl(142 65% 32%));
+    --gradient-accent: linear-gradient(135deg, hsl(142 70% 42%), hsl(145 65% 50%));
+    --gradient-soft: linear-gradient(180deg, hsl(0 0% 100%), hsl(145 25% 96%));
+    --shadow-elegant: 0 10px 40px -10px hsl(145 75% 22% / 0.22);
+    --shadow-card: 0 4px 20px -4px hsl(145 75% 22% / 0.10);
+    --shadow-glow: 0 0 60px hsl(142 70% 42% / 0.30);
 
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
