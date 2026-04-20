@@ -166,6 +166,27 @@ export type Database = {
         }
         Relationships: []
       }
+      exec_positions: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          label: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          label: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          label?: string
+        }
+        Relationships: []
+      }
       executives: {
         Row: {
           bio: string | null
@@ -367,9 +388,18 @@ export type Database = {
           bio: string | null
           created_at: string
           display_name: string | null
+          display_order: number
+          email_public: string | null
           id: string
+          instagram: string | null
+          is_approved: boolean
+          linkedin: string | null
+          photo_url: string | null
+          position: string | null
+          twitter: string | null
           updated_at: string
           user_id: string
+          whatsapp: string | null
         }
         Insert: {
           assigned_level?: Database["public"]["Enums"]["course_level"] | null
@@ -377,9 +407,18 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_name?: string | null
+          display_order?: number
+          email_public?: string | null
           id?: string
+          instagram?: string | null
+          is_approved?: boolean
+          linkedin?: string | null
+          photo_url?: string | null
+          position?: string | null
+          twitter?: string | null
           updated_at?: string
           user_id: string
+          whatsapp?: string | null
         }
         Update: {
           assigned_level?: Database["public"]["Enums"]["course_level"] | null
@@ -387,9 +426,18 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_name?: string | null
+          display_order?: number
+          email_public?: string | null
           id?: string
+          instagram?: string | null
+          is_approved?: boolean
+          linkedin?: string | null
+          photo_url?: string | null
+          position?: string | null
+          twitter?: string | null
           updated_at?: string
           user_id?: string
+          whatsapp?: string | null
         }
         Relationships: []
       }
