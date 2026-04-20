@@ -183,6 +183,7 @@ const Courses = () => {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
+          )}
         </div>
       </div>
 
