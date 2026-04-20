@@ -30,14 +30,15 @@ interface Course {
 }
 
 const Materials = () => {
-  const { isStaff, user } = useAuth();
+  const { isStaff, isCourseRep, assignedLevel, user } = useAuth();
   const [materials, setMaterials] = useState<Material[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
-  const [myLevel, setMyLevel] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const [filterCourse, setFilterCourse] = useState<string>("all");
+
+  const canUpload = isStaff || isCourseRep;
 
   const [form, setForm] = useState<{ course_id: string; title: string; description: string; external_link: string }>({
     course_id: "",
@@ -49,13 +50,7 @@ const Materials = () => {
 
   useEffect(() => {
     document.title = "Materials — Dashboard";
-    (async () => {
-      if (!isStaff && user) {
-        const { data: prof } = await supabase.from("profiles").select("assigned_level").eq("user_id", user.id).maybeSingle();
-        setMyLevel(prof?.assigned_level ?? null);
-      }
-      await load();
-    })();
+    load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -72,9 +67,9 @@ const Materials = () => {
 
   const allowedCourses = useMemo(() => {
     if (isStaff) return courses;
-    if (myLevel) return courses.filter((c) => c.level === myLevel);
+    if (isCourseRep && assignedLevel) return courses.filter((c) => c.level === assignedLevel);
     return [];
-  }, [courses, isStaff, myLevel]);
+  }, [courses, isStaff, isCourseRep, assignedLevel]);
 
   const visibleMaterials = useMemo(() => {
     let list = materials;
@@ -135,9 +130,11 @@ const Materials = () => {
         <div>
           <h1 className="text-2xl font-display font-bold">Course Materials</h1>
           <p className="text-sm text-muted-foreground">
-            {isStaff ? "Upload PDFs, slides, or links for any course." : myLevel
-              ? `Upload materials for your assigned level (${myLevel}L).`
-              : "No level assigned yet — ask an admin to assign you."}
+            {isStaff
+              ? "Upload PDFs, slides, or links for any course."
+              : isCourseRep && assignedLevel
+                ? `Upload materials for your assigned level (${assignedLevel}L).`
+                : "No level assigned yet — ask an admin to assign you."}
           </p>
         </div>
         <div className="flex gap-2">
@@ -150,7 +147,7 @@ const Materials = () => {
               ))}
             </SelectContent>
           </Select>
-          {(isStaff || (myLevel && allowedCourses.length > 0)) && (
+          {canUpload && allowedCourses.length > 0 && (
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
                 <Button variant="hero"><Plus className="h-4 w-4 mr-1" /> Add</Button>
