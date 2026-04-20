@@ -28,6 +28,8 @@ import DashCalendar from "./pages/dashboard/Calendar.tsx";
 import DashSuggestions from "./pages/dashboard/Suggestions.tsx";
 import DashSignups from "./pages/dashboard/Signups.tsx";
 import DashUsers from "./pages/dashboard/Users.tsx";
+import DashMyProfile from "./pages/dashboard/MyProfile.tsx";
+import DashPositions from "./pages/dashboard/Positions.tsx";
 
 const queryClient = new QueryClient();
 
@@ -59,6 +61,8 @@ const App = () => (
               }
             >
               <Route index element={<DashOverview />} />
+              <Route path="profile" element={<DashMyProfile />} />
+              <Route path="positions" element={<ProtectedRoute requireRoles={["admin"]}><DashPositions /></ProtectedRoute>} />
               <Route path="executives" element={<ProtectedRoute requireRoles={["admin", "exec"]}><DashExecutives /></ProtectedRoute>} />
               <Route path="courses" element={<ProtectedRoute requireRoles={["admin", "exec"]}><DashCourses /></ProtectedRoute>} />
               <Route path="materials" element={<ProtectedRoute requireRoles={["admin", "exec", "course_rep"]}><DashMaterials /></ProtectedRoute>} />

@@ -54,7 +54,7 @@ export const DashboardSidebar = () => {
   const collapsed = state === "collapsed";
   const { isStaff, isAdmin } = useAuth();
   const location = useLocation();
-  const items = isStaff ? staffItems : repItems;
+  const items = [...commonItems, ...(isStaff ? staffExtras : repExtras)];
 
   return (
     <Sidebar collapsible="icon">
@@ -84,23 +84,42 @@ export const DashboardSidebar = () => {
                 );
               })}
               {isAdmin && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <NavLink
-                      to="/dashboard/users"
-                      end
-                      className={cn(
-                        "flex items-center gap-2",
-                        location.pathname === "/dashboard/users"
-                          ? "bg-accent-soft text-primary font-medium"
-                          : "hover:bg-secondary"
-                      )}
-                    >
-                      <ShieldCheck className="h-4 w-4" />
-                      {!collapsed && <span>Users & Roles</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to="/dashboard/positions"
+                        end
+                        className={cn(
+                          "flex items-center gap-2",
+                          location.pathname === "/dashboard/positions"
+                            ? "bg-accent-soft text-primary font-medium"
+                            : "hover:bg-secondary"
+                        )}
+                      >
+                        <Briefcase className="h-4 w-4" />
+                        {!collapsed && <span>Positions</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild>
+                      <NavLink
+                        to="/dashboard/users"
+                        end
+                        className={cn(
+                          "flex items-center gap-2",
+                          location.pathname === "/dashboard/users"
+                            ? "bg-accent-soft text-primary font-medium"
+                            : "hover:bg-secondary"
+                        )}
+                      >
+                        <ShieldCheck className="h-4 w-4" />
+                        {!collapsed && <span>Users & Roles</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </>
               )}
             </SidebarMenu>
           </SidebarGroupContent>
