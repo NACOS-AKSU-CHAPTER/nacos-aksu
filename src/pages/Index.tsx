@@ -4,6 +4,7 @@ import { ArrowRight, BookOpen, Calendar, Users, Sparkles, GraduationCap, Image a
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
 import heroBg from "@/assets/hero-bg.jpg";
 
 const features = [
@@ -34,6 +35,11 @@ const Index = () => {
   const [featured, setFeatured] = useState<FeaturedEvent | null>(null);
   const [news, setNews] = useState<NewsItem[]>([]);
   const [photos, setPhotos] = useState<Photo[]>([]);
+
+  const featuresSection = useScrollAnimation();
+  const featuredSection = useScrollAnimation();
+  const photosSection = useScrollAnimation();
+  const ctaSection = useScrollAnimation();
 
   useEffect(() => {
     document.title = "NACOS AKSU — Department of Computing";
@@ -98,14 +104,17 @@ const Index = () => {
 
       <section className="py-20 md:py-28">
         <div className="container mx-auto container-px">
-          <div className="max-w-2xl mb-12">
+          <div ref={featuresSection.ref} className={`max-w-2xl mb-12 scroll-animate ${featuresSection.isVisible ? 'animate-in' : ''}`}>
             <p className="text-sm font-semibold uppercase tracking-wider text-accent mb-3">What's inside</p>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-balance">Everything a computing student needs, in one place.</h2>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {features.map((f) => (
+            {features.map((f, idx) => (
               <Link key={f.title} to={f.to} className="group">
-                <Card className="h-full p-6 border-border hover:border-accent/50 transition-smooth shadow-card-soft hover:shadow-elegant hover:-translate-y-1">
+                <Card
+                  className={`h-full p-6 border-border hover:border-accent/50 transition-smooth shadow-card-soft hover:shadow-elegant hover:-translate-y-1 scroll-animate-scale ${featuresSection.isVisible ? 'animate-in' : ''}`}
+                  style={{ animationDelay: `${idx * 0.1}s` }}
+                >
                   <div className="h-11 w-11 rounded-lg bg-accent-soft text-accent inline-flex items-center justify-center mb-4 group-hover:bg-accent group-hover:text-accent-foreground transition-smooth">
                     <f.icon className="h-5 w-5" />
                   </div>
@@ -122,7 +131,7 @@ const Index = () => {
       {(featured || news.length > 0) && (
         <section className="py-20 md:py-24 gradient-soft">
           <div className="container mx-auto container-px">
-            <div className="flex items-end justify-between mb-10 gap-4 flex-wrap">
+            <div ref={featuredSection.ref} className={`flex items-end justify-between mb-10 gap-4 flex-wrap scroll-animate ${featuredSection.isVisible ? 'animate-in' : ''}`}>
               <div>
                 <p className="text-sm font-semibold uppercase tracking-wider text-accent mb-3">Happening now</p>
                 <h2 className="font-display text-3xl md:text-4xl font-bold">Featured event & latest news</h2>
@@ -132,7 +141,7 @@ const Index = () => {
 
             <div className="grid lg:grid-cols-3 gap-6">
               {featured ? (
-                <Card className="lg:col-span-2 overflow-hidden border-border shadow-card-soft">
+                <Card className={`lg:col-span-2 overflow-hidden border-border shadow-card-soft scroll-animate-left ${featuredSection.isVisible ? 'animate-in' : ''}`}>
                   {featured.cover_url ? (
                     <img src={featured.cover_url} alt={featured.title} className="aspect-[16/9] w-full object-cover" />
                   ) : (
@@ -153,8 +162,12 @@ const Index = () => {
               )}
 
               <div className="space-y-5">
-                {news.length > 0 ? news.map((n) => (
-                  <Card key={n.id} className="p-5 border-border shadow-card-soft hover:shadow-elegant transition-smooth">
+                {news.length > 0 ? news.map((n, idx) => (
+                  <Card
+                    key={n.id}
+                    className={`p-5 border-border shadow-card-soft hover:shadow-elegant transition-smooth scroll-animate-right ${featuredSection.isVisible ? 'animate-in' : ''}`}
+                    style={{ animationDelay: `${idx * 0.15}s` }}
+                  >
                     <div className="text-xs text-muted-foreground mb-2">{formatRelative(n.published_at)}</div>
                     <h4 className="font-display font-semibold leading-snug">{n.title}</h4>
                     {n.excerpt && <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{n.excerpt}</p>}
@@ -171,7 +184,7 @@ const Index = () => {
       {photos.length > 0 && (
         <section className="py-20 md:py-24">
           <div className="container mx-auto container-px">
-            <div className="flex items-end justify-between mb-10 gap-4 flex-wrap">
+            <div ref={photosSection.ref} className={`flex items-end justify-between mb-10 gap-4 flex-wrap scroll-animate ${photosSection.isVisible ? 'animate-in' : ''}`}>
               <div>
                 <p className="text-sm font-semibold uppercase tracking-wider text-accent mb-3">Moments</p>
                 <h2 className="font-display text-3xl md:text-4xl font-bold">From our community</h2>
@@ -179,8 +192,13 @@ const Index = () => {
               <Button asChild variant="ghost" size="sm"><Link to="/gallery">Open gallery <ArrowRight className="h-3.5 w-3.5" /></Link></Button>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {photos.map((p) => (
-                <Link key={p.id} to="/gallery" className="aspect-square rounded-xl overflow-hidden shadow-card-soft hover:scale-[1.02] transition-smooth">
+              {photos.map((p, idx) => (
+                <Link
+                  key={p.id}
+                  to="/gallery"
+                  className={`aspect-square rounded-xl overflow-hidden shadow-card-soft hover:scale-[1.02] transition-smooth scroll-animate-scale ${photosSection.isVisible ? 'animate-in' : ''}`}
+                  style={{ animationDelay: `${idx * 0.1}s` }}
+                >
                   <img src={p.photo_url} alt="" className="h-full w-full object-cover" />
                 </Link>
               ))}
@@ -191,7 +209,7 @@ const Index = () => {
 
       <section className="py-20">
         <div className="container mx-auto container-px">
-          <div className="rounded-2xl gradient-hero text-primary-foreground p-10 md:p-16 text-center shadow-elegant">
+          <div ref={ctaSection.ref} className={`rounded-2xl gradient-hero text-primary-foreground p-10 md:p-16 text-center shadow-elegant scroll-animate-scale ${ctaSection.isVisible ? 'animate-in' : ''}`}>
             <h2 className="font-display text-3xl md:text-4xl font-bold max-w-2xl mx-auto text-balance">Ready to be part of something bigger?</h2>
             <p className="mt-4 opacity-85 max-w-xl mx-auto">Join hundreds of computing students learning, building, and shaping the future of tech at AKSU.</p>
             <div className="mt-8 flex flex-wrap gap-3 justify-center">

@@ -8,9 +8,11 @@ export const Footer = () => {
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-accent-foreground font-display font-bold">
-                N
-              </div>
+              <img
+                src="/logo.png"
+                alt="NACOS AKSU Logo"
+                className="h-10 w-10 object-contain"
+              />
               <div className="leading-tight">
                 <div className="font-display font-bold text-lg">NACOS AKSU</div>
                 <div className="text-xs uppercase tracking-wider opacity-70">Computing Students</div>
@@ -39,7 +41,7 @@ export const Footer = () => {
             <ul className="space-y-3 text-sm opacity-80">
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
-                <span>Akwa Ibom State University, Mkpat Enin</span>
+                <span>Department of Computer Science, <br /> Faculty of Computing & Information Technology. <br /> Akwa Ibom State University, Ikot Akpaden</span>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 shrink-0" />

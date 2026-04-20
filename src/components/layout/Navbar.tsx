@@ -30,9 +30,11 @@ export const Navbar = () => {
     >
       <div className="container mx-auto container-px flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center gap-2 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg gradient-hero text-primary-foreground font-display font-bold shadow-card-soft">
-            N
-          </div>
+          <img
+            src="/logo.png"
+            alt="NACOS AKSU Logo"
+            className="h-9 w-9 object-contain"
+          />
           <div className="leading-tight">
             <div className="font-display font-bold text-base text-foreground">NACOS</div>
             <div className="text-[10px] uppercase tracking-wider text-muted-foreground">AKSU Chapter</div>
