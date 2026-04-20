@@ -27,7 +27,7 @@ const Auth = () => {
   const [posMode, setPosMode] = useState<"preset" | "custom">("preset");
 
   const [li, setLi] = useState({ email: "", password: "" });
-  const [su, setSu] = useState({ name: "", email: "", password: "", position: "", customPosition: "" });
+  const [su, setSu] = useState({ name: "", email: "", password: "", position: "", customPosition: "", level: "" });
 
   useEffect(() => {
     if (!loading && user) navigate("/dashboard", { replace: true });
@@ -64,17 +64,30 @@ const Auth = () => {
     setBusy(true);
     try {
       const finalPosition = posMode === "preset" ? su.position : su.customPosition;
+      const isCourseRep = finalPosition.toLowerCase().includes("course rep");
+
       nameSchema.parse(su.name);
       emailSchema.parse(su.email);
       passwordSchema.parse(su.password);
       positionSchema.parse(finalPosition);
+
+      // Validate level if Course Rep
+      if (isCourseRep && !su.level) {
+        toast.error("Please select your level");
+        setBusy(false);
+        return;
+      }
 
       const { error } = await supabase.auth.signUp({
         email: su.email,
         password: su.password,
         options: {
           emailRedirectTo: `${window.location.origin}/dashboard`,
-          data: { display_name: su.name, position: finalPosition },
+          data: {
+            display_name: su.name,
+            position: finalPosition,
+            assigned_level: isCourseRep ? su.level : null
+          },
         },
       });
       if (error) throw error;
@@ -145,6 +158,7 @@ const Auth = () => {
                           {positions.map((p) => (
                             <SelectItem key={p.id} value={p.label}>{p.label}</SelectItem>
                           ))}
+                          <SelectItem value="Course Rep">Course Rep</SelectItem>
                           <SelectItem value="__other__">Other (type your own)…</SelectItem>
                         </SelectContent>
                       </Select>
@@ -156,6 +170,24 @@ const Auth = () => {
                     )}
                     <p className="text-xs text-muted-foreground">Your account will be reviewed by an admin before showing publicly.</p>
                   </div>
+
+                  {/* Conditional Level Selection for Course Reps */}
+                  {((posMode === "preset" && su.position.toLowerCase().includes("course rep")) ||
+                    (posMode === "custom" && su.customPosition.toLowerCase().includes("course rep"))) && (
+                      <div className="space-y-2">
+                        <Label htmlFor="su-level">Level <span className="text-destructive">*</span></Label>
+                        <Select value={su.level} onValueChange={(v) => setSu({ ...su, level: v })}>
+                          <SelectTrigger id="su-level"><SelectValue placeholder="Select your level" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="100">100 Level</SelectItem>
+                            <SelectItem value="200">200 Level</SelectItem>
+                            <SelectItem value="300">300 Level</SelectItem>
+                            <SelectItem value="400">400 Level</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <p className="text-xs text-muted-foreground">Course reps must specify their level.</p>
+                      </div>
+                    )}
                   <Button type="submit" variant="hero" className="w-full" disabled={busy}>
                     {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Create account
                   </Button>

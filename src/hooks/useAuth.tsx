@@ -9,6 +9,7 @@ interface AuthCtx {
   user: User | null;
   roles: AppRole[];
   position: string | null;
+  assignedLevel: string | null;
   loading: boolean;
   signOut: () => Promise<void>;
   refreshRoles: () => Promise<void>;
@@ -30,7 +31,7 @@ interface AuthCtx {
 const Ctx = createContext<AuthCtx | undefined>(undefined);
 
 // Position-based permissions mapping
-const getPermissions = (position: string | null, isAdmin: boolean) => {
+const getPermissions = (position: string | null, isAdmin: boolean, isCourseRep: boolean) => {
   if (isAdmin) {
     return {
       hasFullAccess: true,
@@ -47,6 +48,22 @@ const getPermissions = (position: string | null, isAdmin: boolean) => {
   }
 
   const pos = position?.toLowerCase() || "";
+
+  // Course Rep - can only access courses and materials for their level
+  if (isCourseRep || pos.includes("course rep")) {
+    return {
+      hasFullAccess: false,
+      canAccessExecutives: false,
+      canAccessCourses: true,
+      canAccessMaterials: true,
+      canAccessEvents: false,
+      canAccessNews: false,
+      canAccessGallery: false,
+      canAccessCalendar: false,
+      canAccessSuggestions: false,
+      canAccessSignups: false,
+    };
+  }
 
   // President, Vice President, General Secretary have full access
   if (
@@ -189,6 +206,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [position, setPosition] = useState<string | null>(null);
+  const [assignedLevel, setAssignedLevel] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchRoles = async (uid: string) => {
@@ -197,8 +215,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const fetchPosition = async (uid: string) => {
-    const { data } = await supabase.from("profiles").select("position").eq("user_id", uid).single();
+    const { data } = await supabase.from("profiles").select("position, assigned_level").eq("user_id", uid).single();
     setPosition(data?.position ?? null);
+    setAssignedLevel(data?.assigned_level ?? null);
   };
 
   useEffect(() => {
@@ -233,6 +252,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await supabase.auth.signOut();
     setRoles([]);
     setPosition(null);
+    setAssignedLevel(null);
   };
 
   const refreshRoles = async () => {
@@ -246,7 +266,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const isStaff = isAdmin || roles.includes("exec");
   const isCourseRep = roles.includes("course_rep");
 
-  const permissions = getPermissions(position, isAdmin);
+  const permissions = getPermissions(position, isAdmin, isCourseRep);
 
   return (
     <Ctx.Provider
@@ -255,6 +275,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         user,
         roles,
         position,
+        assignedLevel,
         loading,
         signOut,
         refreshRoles,
