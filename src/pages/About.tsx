@@ -21,7 +21,7 @@ const About = () => {
           <div ref={introSection.ref} className={`prose prose-slate max-w-none scroll-animate ${introSection.isVisible ? 'animate-in' : ''}`}>
             <h2 className="font-display text-2xl md:text-3xl font-bold mb-4">Who we are</h2>
             <p className="text-muted-foreground leading-relaxed text-lg">
-              The Nigerian Association of Computing Students (NACOS), Akwa Ibom State University chapter,
+              The Nigeria Association of Computing Students (NACOS), Akwa Ibom State University chapter,
               is the official body representing all students of the Department of Computing. We exist to
               foster academic excellence, build community, and prepare members for the realities of a
               fast-moving tech industry.

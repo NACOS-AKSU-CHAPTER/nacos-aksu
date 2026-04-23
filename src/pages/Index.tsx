@@ -77,7 +77,7 @@ const Index = () => {
           <div className="max-w-3xl animate-fade-in-up">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-foreground/10 backdrop-blur text-xs font-medium uppercase tracking-wider mb-6 border border-primary-foreground/20">
               <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
-              Nigerian Association of Computing Students • AKSU
+              Nigeria Association of Computing Students • AKSU
             </div>
             <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] text-balance">
               Where computing students <span className="text-accent">build, learn,</span> and lead.

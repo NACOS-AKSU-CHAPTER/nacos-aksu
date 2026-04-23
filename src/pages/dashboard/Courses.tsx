@@ -33,7 +33,8 @@ const Courses = () => {
   const [busy, setBusy] = useState(false);
   const [filter, setFilter] = useState<string>("all");
 
-  const canEdit = isStaff; // Only staff can add/edit/delete courses
+  const canEdit = isStaff; // Only staff can edit/delete courses
+  const canAdd = isStaff || isCourseRep; // Course reps can add courses for their level
   const canView = isStaff || isCourseRep;
 
   useEffect(() => {
@@ -101,7 +102,7 @@ const Courses = () => {
             {isStaff
               ? "Manage courses by level."
               : isCourseRep && assignedLevel
-                ? `View courses for your level (${assignedLevel}L).`
+                ? `Add and view courses for your level (${assignedLevel}L).`
                 : "View available courses."}
           </p>
         </div>
@@ -120,10 +121,17 @@ const Courses = () => {
               </SelectContent>
             </Select>
           )}
-          {canEdit && (
+          {canAdd && (
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
-                <Button variant="hero" onClick={() => { setEditing(empty); setOpen(true); }}>
+                <Button variant="hero" onClick={() => {
+                  // Pre-fill level for course reps
+                  const initialData = isCourseRep && assignedLevel && !isStaff
+                    ? { ...empty, level: assignedLevel }
+                    : empty;
+                  setEditing(initialData);
+                  setOpen(true);
+                }}>
                   <Plus className="h-4 w-4 mr-1" /> Add
                 </Button>
               </DialogTrigger>
@@ -153,7 +161,11 @@ const Courses = () => {
                   <div className="grid grid-cols-2 gap-3">
                     <div>
                       <Label>Level</Label>
-                      <Select value={editing.level} onValueChange={(v: any) => setEditing({ ...editing, level: v })}>
+                      <Select
+                        value={editing.level}
+                        onValueChange={(v: any) => setEditing({ ...editing, level: v })}
+                        disabled={isCourseRep && !isStaff} // Course reps can only add to their level
+                      >
                         <SelectTrigger><SelectValue /></SelectTrigger>
                         <SelectContent>
                           <SelectItem value="100">100</SelectItem>
@@ -162,6 +174,9 @@ const Courses = () => {
                           <SelectItem value="400">400</SelectItem>
                         </SelectContent>
                       </Select>
+                      {isCourseRep && !isStaff && (
+                        <p className="text-xs text-muted-foreground mt-1">Locked to your assigned level</p>
+                      )}
                     </div>
                     <div>
                       <Label>Semester</Label>

@@ -147,51 +147,57 @@ const Materials = () => {
               ))}
             </SelectContent>
           </Select>
-          {canUpload && allowedCourses.length > 0 && (
-            <Dialog open={open} onOpenChange={setOpen}>
-              <DialogTrigger asChild>
-                <Button variant="hero"><Plus className="h-4 w-4 mr-1" /> Add</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader><DialogTitle>Add material</DialogTitle></DialogHeader>
-                <div className="space-y-3">
-                  <div>
-                    <Label>Course *</Label>
-                    <Select value={form.course_id} onValueChange={(v) => setForm({ ...form, course_id: v })}>
-                      <SelectTrigger><SelectValue placeholder="Select course" /></SelectTrigger>
-                      <SelectContent>
-                        {allowedCourses.map((c) => (
-                          <SelectItem key={c.id} value={c.id}>{c.code} — {c.title}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+          {canUpload && (
+            allowedCourses.length > 0 ? (
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="hero"><Plus className="h-4 w-4 mr-1" /> Add</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader><DialogTitle>Add material</DialogTitle></DialogHeader>
+                  <div className="space-y-3">
+                    <div>
+                      <Label>Course *</Label>
+                      <Select value={form.course_id} onValueChange={(v) => setForm({ ...form, course_id: v })}>
+                        <SelectTrigger><SelectValue placeholder="Select course" /></SelectTrigger>
+                        <SelectContent>
+                          {allowedCourses.map((c) => (
+                            <SelectItem key={c.id} value={c.id}>{c.code} — {c.title}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label>Title *</Label>
+                      <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+                    </div>
+                    <div>
+                      <Label>Description</Label>
+                      <Textarea rows={2} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+                    </div>
+                    <div>
+                      <Label>File (PDF, slides, etc.)</Label>
+                      <Input type="file" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+                    </div>
+                    <div className="text-center text-xs text-muted-foreground">— or —</div>
+                    <div>
+                      <Label>External link</Label>
+                      <Input placeholder="https://..." value={form.external_link} onChange={(e) => setForm({ ...form, external_link: e.target.value })} />
+                    </div>
                   </div>
-                  <div>
-                    <Label>Title *</Label>
-                    <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-                  </div>
-                  <div>
-                    <Label>Description</Label>
-                    <Textarea rows={2} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-                  </div>
-                  <div>
-                    <Label>File (PDF, slides, etc.)</Label>
-                    <Input type="file" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
-                  </div>
-                  <div className="text-center text-xs text-muted-foreground">— or —</div>
-                  <div>
-                    <Label>External link</Label>
-                    <Input placeholder="https://..." value={form.external_link} onChange={(e) => setForm({ ...form, external_link: e.target.value })} />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-                  <Button variant="hero" onClick={save} disabled={busy}>
-                    {busy && <Loader2 className="h-4 w-4 mr-1 animate-spin" />} Upload
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+                  <DialogFooter>
+                    <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+                    <Button variant="hero" onClick={save} disabled={busy}>
+                      {busy && <Loader2 className="h-4 w-4 mr-1 animate-spin" />} Upload
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            ) : (
+              <Button variant="hero" disabled>
+                <Plus className="h-4 w-4 mr-1" /> Add
+              </Button>
+            )
           )}
         </div>
       </div>

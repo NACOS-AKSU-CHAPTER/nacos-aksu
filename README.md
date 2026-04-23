@@ -1,6 +1,6 @@
 # NACOS AKSU - Department Site
 
-A modern web application for the Nigerian Association of Computing Students, AKSU chapter.
+A modern web application for the Nigeria Association of Computing Students, AKSU chapter.
 
 ## Features
 

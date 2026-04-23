@@ -19,7 +19,7 @@ export const Footer = () => {
               </div>
             </div>
             <p className="text-sm opacity-80 max-w-md leading-relaxed">
-              The official hub of the Nigerian Association of Computing Students,
+              The official hub of the Nigeria Association of Computing Students,
               Akwa Ibom State University chapter — uniting students, sharing knowledge,
               and building the future of tech in our department.
             </p>
