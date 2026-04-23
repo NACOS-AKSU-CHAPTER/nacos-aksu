@@ -10,7 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Eye, EyeOff } from "lucide-react";
 
 const emailSchema = z.string().trim().email("Enter a valid email").max(255);
 const passwordSchema = z.string().min(8, "Password must be at least 8 characters").max(72);
@@ -28,6 +28,8 @@ const Auth = () => {
 
   const [li, setLi] = useState({ email: "", password: "" });
   const [su, setSu] = useState({ name: "", email: "", password: "", position: "", customPosition: "", level: "" });
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
 
   useEffect(() => {
     if (!loading && user) navigate("/dashboard", { replace: true });
@@ -127,7 +129,23 @@ const Auth = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="li-password">Password</Label>
-                    <Input id="li-password" type="password" required value={li.password} onChange={(e) => setLi({ ...li, password: e.target.value })} />
+                    <div className="relative">
+                      <Input
+                        id="li-password"
+                        type={showLoginPassword ? "text" : "password"}
+                        required
+                        value={li.password}
+                        onChange={(e) => setLi({ ...li, password: e.target.value })}
+                        className="pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowLoginPassword(!showLoginPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {showLoginPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
                   </div>
                   <Button type="submit" variant="hero" className="w-full" disabled={busy}>
                     {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Sign in
@@ -146,7 +164,24 @@ const Auth = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="su-password">Password</Label>
-                    <Input id="su-password" type="password" required minLength={8} value={su.password} onChange={(e) => setSu({ ...su, password: e.target.value })} />
+                    <div className="relative">
+                      <Input
+                        id="su-password"
+                        type={showSignupPassword ? "text" : "password"}
+                        required
+                        minLength={8}
+                        value={su.password}
+                        onChange={(e) => setSu({ ...su, password: e.target.value })}
+                        className="pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowSignupPassword(!showSignupPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {showSignupPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
                     <p className="text-xs text-muted-foreground">At least 8 characters.</p>
                   </div>
                   <div className="space-y-2">
