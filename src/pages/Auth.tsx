@@ -22,6 +22,7 @@ interface Position { id: string; label: string }
 const Auth = () => {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
+  const isExcoMode = window.location.pathname === "/exco/auth";
   const [busy, setBusy] = useState(false);
   const [positions, setPositions] = useState<Position[]>([]);
   const [posMode, setPosMode] = useState<"preset" | "custom">("preset");
@@ -65,16 +66,20 @@ const Auth = () => {
     e.preventDefault();
     setBusy(true);
     try {
-      const finalPosition = posMode === "preset" ? su.position : su.customPosition;
-      const isCourseRep = finalPosition.toLowerCase().includes("course rep");
+      const finalPosition = isExcoMode 
+        ? (posMode === "preset" ? su.position : su.customPosition)
+        : "Student";
+      const isCourseRep = isExcoMode && finalPosition.toLowerCase().includes("course rep");
 
       nameSchema.parse(su.name);
       emailSchema.parse(su.email);
       passwordSchema.parse(su.password);
-      positionSchema.parse(finalPosition);
+      if (isExcoMode) {
+        positionSchema.parse(finalPosition);
+      }
 
-      // Validate level if Course Rep
-      if (isCourseRep && !su.level) {
+      // Validate level
+      if ((isCourseRep || !isExcoMode) && !su.level) {
         toast.error("Please select your level");
         setBusy(false);
         return;
@@ -88,12 +93,18 @@ const Auth = () => {
           data: {
             display_name: su.name,
             position: finalPosition,
-            assigned_level: isCourseRep ? su.level : null
+            assigned_level: su.level || null
           },
         },
       });
       if (error) throw error;
-      toast.success("Account created — pending admin approval");
+      
+      if (isExcoMode) {
+        toast.success("Account created — pending admin approval");
+      } else {
+        toast.success("Account created successfully!");
+      }
+      
       const { error: e2 } = await supabase.auth.signInWithPassword({ email: su.email, password: su.password });
       if (e2) throw e2;
       navigate("/dashboard");
@@ -112,8 +123,10 @@ const Auth = () => {
         </div>
         <Card className="shadow-elegant">
           <CardHeader className="text-center">
-            <CardTitle>NACOS AKSU</CardTitle>
-            <CardDescription>Sign in to access your dashboard</CardDescription>
+            <CardTitle>{isExcoMode ? "NACOS AKSU Exco Portal" : "NACOS AKSU Student Portal"}</CardTitle>
+            <CardDescription>
+              {isExcoMode ? "Sign in to access your executive dashboard" : "Sign in to access your student learning dashboard"}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="login">
@@ -184,45 +197,63 @@ const Auth = () => {
                     </div>
                     <p className="text-xs text-muted-foreground">At least 8 characters.</p>
                   </div>
-                  <div className="space-y-2">
-                    <Label>Position</Label>
-                    {posMode === "preset" ? (
-                      <Select value={su.position} onValueChange={(v) => v === "__other__" ? setPosMode("custom") : setSu({ ...su, position: v })}>
-                        <SelectTrigger><SelectValue placeholder="Choose your position" /></SelectTrigger>
+                  {isExcoMode ? (
+                    <>
+                      <div className="space-y-2">
+                        <Label>Position</Label>
+                        {posMode === "preset" ? (
+                          <Select value={su.position} onValueChange={(v) => v === "__other__" ? setPosMode("custom") : setSu({ ...su, position: v })}>
+                            <SelectTrigger><SelectValue placeholder="Choose your position" /></SelectTrigger>
+                            <SelectContent>
+                              {positions.map((p) => (
+                                <SelectItem key={p.id} value={p.label}>{p.label}</SelectItem>
+                              ))}
+                              <SelectItem value="Course Rep">Course Rep</SelectItem>
+                              <SelectItem value="__other__">Other (type your own)…</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <div className="space-y-1">
+                            <Input placeholder="e.g. Welfare Assistant" value={su.customPosition} onChange={(e) => setSu({ ...su, customPosition: e.target.value })} />
+                            <button type="button" className="text-xs text-muted-foreground hover:text-foreground underline" onClick={() => setPosMode("preset")}>← Pick from preset list</button>
+                          </div>
+                        )}
+                        <p className="text-xs text-muted-foreground">Your account will be reviewed by an admin before showing publicly.</p>
+                      </div>
+
+                      {/* Conditional Level Selection for Course Reps */}
+                      {((posMode === "preset" && su.position.toLowerCase().includes("course rep")) ||
+                        (posMode === "custom" && su.customPosition.toLowerCase().includes("course rep"))) && (
+                          <div className="space-y-2">
+                            <Label htmlFor="su-level">Level <span className="text-destructive">*</span></Label>
+                            <Select value={su.level} onValueChange={(v) => setSu({ ...su, level: v })}>
+                              <SelectTrigger id="su-level"><SelectValue placeholder="Select your level" /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="100">100 Level</SelectItem>
+                                <SelectItem value="200">200 Level</SelectItem>
+                                <SelectItem value="300">300 Level</SelectItem>
+                                <SelectItem value="400">400 Level</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <p className="text-xs text-muted-foreground">Course reps must specify their level.</p>
+                          </div>
+                        )}
+                    </>
+                  ) : (
+                    <div className="space-y-2">
+                      <Label htmlFor="su-level">Level <span className="text-destructive">*</span></Label>
+                      <Select value={su.level} onValueChange={(v) => setSu({ ...su, level: v })}>
+                        <SelectTrigger id="su-level"><SelectValue placeholder="Select your level" /></SelectTrigger>
                         <SelectContent>
-                          {positions.map((p) => (
-                            <SelectItem key={p.id} value={p.label}>{p.label}</SelectItem>
-                          ))}
-                          <SelectItem value="Course Rep">Course Rep</SelectItem>
-                          <SelectItem value="__other__">Other (type your own)…</SelectItem>
+                          <SelectItem value="100">100 Level</SelectItem>
+                          <SelectItem value="200">200 Level</SelectItem>
+                          <SelectItem value="300">300 Level</SelectItem>
+                          <SelectItem value="400">400 Level</SelectItem>
                         </SelectContent>
                       </Select>
-                    ) : (
-                      <div className="space-y-1">
-                        <Input placeholder="e.g. Welfare Assistant" value={su.customPosition} onChange={(e) => setSu({ ...su, customPosition: e.target.value })} />
-                        <button type="button" className="text-xs text-muted-foreground hover:text-foreground underline" onClick={() => setPosMode("preset")}>← Pick from preset list</button>
-                      </div>
-                    )}
-                    <p className="text-xs text-muted-foreground">Your account will be reviewed by an admin before showing publicly.</p>
-                  </div>
-
-                  {/* Conditional Level Selection for Course Reps */}
-                  {((posMode === "preset" && su.position.toLowerCase().includes("course rep")) ||
-                    (posMode === "custom" && su.customPosition.toLowerCase().includes("course rep"))) && (
-                      <div className="space-y-2">
-                        <Label htmlFor="su-level">Level <span className="text-destructive">*</span></Label>
-                        <Select value={su.level} onValueChange={(v) => setSu({ ...su, level: v })}>
-                          <SelectTrigger id="su-level"><SelectValue placeholder="Select your level" /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="100">100 Level</SelectItem>
-                            <SelectItem value="200">200 Level</SelectItem>
-                            <SelectItem value="300">300 Level</SelectItem>
-                            <SelectItem value="400">400 Level</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <p className="text-xs text-muted-foreground">Course reps must specify their level.</p>
-                      </div>
-                    )}
+                      <p className="text-xs text-muted-foreground">Select your current academic level.</p>
+                    </div>
+                  )}
                   <Button type="submit" variant="hero" className="w-full" disabled={busy}>
                     {busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />} Create account
                   </Button>

@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   UserCircle,
   Briefcase,
+  Award,
 } from "lucide-react";
 import {
   Sidebar,
@@ -48,6 +49,7 @@ export const DashboardSidebar = () => {
     { title: "My Profile", url: "/dashboard/profile", icon: UserCircle, show: true },
     { title: "Executives", url: "/dashboard/executives", icon: Users, show: canAccessExecutives },
     { title: "Courses", url: "/dashboard/courses", icon: BookOpen, show: canAccessCourses },
+    { title: "Quizzes", url: "/dashboard/quizzes", icon: Award, show: true },
     { title: "Materials", url: "/dashboard/materials", icon: FileText, show: canAccessMaterials },
     { title: "Events", url: "/dashboard/events", icon: Calendar, show: canAccessEvents },
     { title: "News", url: "/dashboard/news", icon: Newspaper, show: canAccessNews },
