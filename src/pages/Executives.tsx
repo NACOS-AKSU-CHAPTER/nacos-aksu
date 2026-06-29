@@ -28,6 +28,43 @@ const initials = (name: string | null) =>
     .join("")
     .toUpperCase();
 
+const getPositionRank = (position: string | null): number => {
+  if (!position) return 99;
+  const pos = position.toLowerCase().trim();
+  
+  if (pos === "president") return 1;
+  if (pos.includes("vice president")) return 2;
+  if (pos.includes("stakeholder") || pos.includes("chairman")) return 3;
+  if (pos.includes("software") || pos.includes("technology") || pos.includes("tech")) return 4;
+  if (pos.includes("general secretary") || pos === "secretary") return 5;
+  if (pos.includes("assistant general secretary") || pos.includes("assistant secretary")) return 6;
+  if (pos.includes("financial secretary")) return 7;
+  if (pos.includes("treasurer")) return 8;
+  if (pos.includes("p.r.o") || pos.includes("pro") || pos.includes("public relations") || pos.includes("information") || pos.includes("publicity")) return 9;
+  if (pos.includes("welfare")) return 10;
+  if (pos.includes("social")) return 11;
+  if (pos.includes("sports")) return 12;
+  
+  return 20; // other positions
+};
+
+const sortExecutives = (a: ExecProfile, b: ExecProfile) => {
+  const rankA = getPositionRank(a.position);
+  const rankB = getPositionRank(b.position);
+  
+  if (rankA !== rankB) {
+    return rankA - rankB;
+  }
+  
+  if (a.display_order !== b.display_order) {
+    return a.display_order - b.display_order;
+  }
+  
+  const nameA = a.display_name ?? "";
+  const nameB = b.display_name ?? "";
+  return nameA.localeCompare(nameB);
+};
+
 const Executives = () => {
   const [list, setList] = useState<ExecProfile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,9 +76,9 @@ const Executives = () => {
       .select("user_id, display_name, bio, position, photo_url, email_public, whatsapp, twitter, linkedin, instagram, display_order")
       .eq("is_approved", true)
       .not("position", "is", null)
-      .order("display_order", { ascending: true })
       .then(({ data }) => {
-        setList((data ?? []) as ExecProfile[]);
+        const sorted = ((data ?? []) as ExecProfile[]).sort(sortExecutives);
+        setList(sorted);
         setLoading(false);
       });
   }, []);
