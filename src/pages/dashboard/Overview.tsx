@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Users, BookOpen, FileText, Calendar, Inbox, UserPlus, ArrowRight, Award, GraduationCap } from "lucide-react";
+import { Users, BookOpen, FileText, Calendar, Inbox, UserPlus, ArrowRight, Award, GraduationCap, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
 
 interface RecentAttempt {
   id: string;
@@ -20,8 +21,23 @@ interface RecentAttempt {
 }
 
 const DashboardOverview = () => {
-  const { user, roles, isStaff, isCourseRep, assignedLevel, membershipId } = useAuth();
+  const { user, roles, isStaff, isCourseRep, assignedLevel, membershipId, refreshRoles } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [generatingId, setGeneratingId] = useState(false);
+
+  const handleGenerateId = async () => {
+    setGeneratingId(true);
+    try {
+      const { data, error } = await supabase.rpc("assign_membership_id");
+      if (error) throw error;
+      toast.success(`Your NACOS ID is: ${data}`);
+      await refreshRoles();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to generate NACOS ID");
+    } finally {
+      setGeneratingId(false);
+    }
+  };
   
   // Executive stats
   const [counts, setCounts] = useState({
@@ -141,9 +157,16 @@ const DashboardOverview = () => {
               {assignedLevel ? `${assignedLevel} Level` : "Student"} • Department of Computing
             </p>
           </div>
-          <div className="bg-primary/5 border border-primary/20 rounded-xl px-4 py-3 shrink-0 text-right md:text-left">
-            <div className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">NACOS Membership ID</div>
-            <div className="text-lg font-mono font-bold text-primary">{membershipId || "Assigning..."}</div>
+          <div className="bg-primary/5 border border-primary/20 rounded-xl px-4 py-3 shrink-0 flex flex-col items-end justify-center min-w-[160px] text-right">
+            <div className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider mb-1">NACOS ID</div>
+            {membershipId ? (
+              <div className="text-lg font-mono font-bold text-primary">{membershipId}</div>
+            ) : (
+              <Button size="sm" onClick={handleGenerateId} disabled={generatingId} className="h-8 text-xs font-semibold gap-1">
+                {generatingId && <Loader2 className="h-3 w-3 animate-spin" />}
+                Claim NACOS ID
+              </Button>
+            )}
           </div>
         </div>
 
@@ -294,9 +317,16 @@ const DashboardOverview = () => {
             {roles.includes("admin") ? "Admin" : "Executive"} Portal • NACOS AKSU Leadership
           </p>
         </div>
-        <div className="bg-primary/5 border border-primary/20 rounded-xl px-4 py-3 shrink-0 text-right md:text-left">
-          <div className="text-xs text-muted-foreground uppercase font-semibold tracking-wider">NACOS ID</div>
-          <div className="text-lg font-mono font-bold text-primary">{membershipId || "Assigning..."}</div>
+        <div className="bg-primary/5 border border-primary/20 rounded-xl px-4 py-3 shrink-0 flex flex-col items-end justify-center min-w-[160px] text-right">
+          <div className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider mb-1">NACOS ID</div>
+          {membershipId ? (
+            <div className="text-lg font-mono font-bold text-primary">{membershipId}</div>
+          ) : (
+            <Button size="sm" onClick={handleGenerateId} disabled={generatingId} className="h-8 text-xs font-semibold gap-1">
+              {generatingId && <Loader2 className="h-3 w-3 animate-spin" />}
+              Claim NACOS ID
+            </Button>
+          )}
         </div>
       </div>
 

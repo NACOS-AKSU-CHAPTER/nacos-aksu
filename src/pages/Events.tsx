@@ -15,12 +15,14 @@ interface EventRow {
   register_link: string | null;
   cover_url: string | null;
 }
+
 interface NewsRow {
   id: string;
   title: string;
   slug: string;
   excerpt: string | null;
   published_at: string;
+  cover_url: string | null;
 }
 
 const fmtDate = (iso: string) =>
@@ -43,7 +45,7 @@ const Events = () => {
       const [up, pa, ne] = await Promise.all([
         supabase.from("events").select("*").eq("is_published", true).gte("event_date", now).order("event_date", { ascending: true }),
         supabase.from("events").select("*").eq("is_published", true).lt("event_date", now).order("event_date", { ascending: false }).limit(20),
-        supabase.from("news").select("id, title, slug, excerpt, published_at").eq("is_published", true).order("published_at", { ascending: false }).limit(9),
+        supabase.from("news").select("id, title, slug, excerpt, published_at, cover_url").eq("is_published", true).order("published_at", { ascending: false }).limit(9),
       ]);
       setUpcoming((up.data ?? []) as EventRow[]);
       setPast((pa.data ?? []) as EventRow[]);
@@ -114,12 +116,17 @@ const Events = () => {
               {news.map((n, idx) => (
                 <Card
                   key={n.id}
-                  className={`p-6 border-border shadow-card-soft hover:shadow-elegant transition-smooth scroll-animate ${newsSection.isVisible ? 'animate-in' : ''}`}
+                  className={`overflow-hidden border-border shadow-card-soft hover:shadow-elegant transition-smooth scroll-animate flex flex-col ${newsSection.isVisible ? 'animate-in' : ''}`}
                   style={{ animationDelay: `${idx * 0.1}s` }}
                 >
-                  <div className="text-xs text-muted-foreground mb-2">{fmtDate(n.published_at)}</div>
-                  <h3 className="font-display font-semibold text-lg leading-snug mb-2">{n.title}</h3>
-                  {n.excerpt && <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">{n.excerpt}</p>}
+                  {n.cover_url && (
+                    <img src={n.cover_url} alt={n.title} className="aspect-[16/9] w-full object-cover" />
+                  )}
+                  <div className="p-6 flex-1 flex flex-col">
+                    <div className="text-xs text-muted-foreground mb-2">{fmtDate(n.published_at)}</div>
+                    <h3 className="font-display font-semibold text-lg leading-snug mb-2">{n.title}</h3>
+                    {n.excerpt && <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 flex-1">{n.excerpt}</p>}
+                  </div>
                 </Card>
               ))}
             </div>

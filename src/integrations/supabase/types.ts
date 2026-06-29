@@ -631,6 +631,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      assign_membership_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_user_level: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["course_level"]

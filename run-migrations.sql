@@ -250,3 +250,19 @@ CREATE POLICY "Users can view their own quiz attempts"
 
 CREATE POLICY "Users can insert their own quiz attempts" 
   ON public.quiz_attempts FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+
+-- =====================================================================
+-- 4. STORAGE BUCKETS INITIALIZATION & PUBLIC ACCESS CONFIG
+-- =====================================================================
+
+-- Ensure all required storage buckets exist and are set to public
+INSERT INTO storage.buckets (id, name, public)
+VALUES 
+  ('events', 'events', true),
+  ('news', 'news', true),
+  ('executives', 'executives', true),
+  ('avatars', 'avatars', true),
+  ('gallery', 'gallery', true)
+ON CONFLICT (id) DO UPDATE SET public = true;
+

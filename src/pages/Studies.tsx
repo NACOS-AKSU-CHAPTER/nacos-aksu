@@ -15,7 +15,9 @@ interface Course {
   units: number;
   description: string | null;
   level: "100" | "200" | "300" | "400";
+  semester: "first" | "second";
 }
+
 interface Material {
   id: string;
   title: string;
@@ -38,9 +40,14 @@ const Studies = () => {
   useEffect(() => {
     document.title = "Studies Hub — NACOS AKSU";
     (async () => {
-      const { data: c } = await supabase.from("courses").select("id, code, title, units, description, level").order("code");
+      const { data: c } = await supabase
+        .from("courses")
+        .select("id, code, title, units, description, level, semester")
+        .order("code");
+      
       const list = (c ?? []) as Course[];
       setCourses(list);
+      
       const entries = await Promise.all(
         list.map((co) =>
           supabase
@@ -105,34 +112,79 @@ const Studies = () => {
 
               {LEVELS.map((l) => {
                 const filtered = filterCourses(l);
+                const firstSemesterCourses = filtered.filter((c) => c.semester === "first");
+                const secondSemesterCourses = filtered.filter((c) => c.semester === "second");
+
                 return (
-                  <TabsContent key={l} value={l} className="mt-8">
+                  <TabsContent key={l} value={l} className="mt-8 space-y-10">
                     {filtered.length === 0 ? (
                       <div className="text-center py-16 text-muted-foreground">
                         {courses.some((c) => c.level === l) ? "No courses match your search." : "No courses for this level yet."}
                       </div>
                     ) : (
-                      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-                        {filtered.map((c) => (
-                          <Card key={c.id} className="p-6 border-border shadow-card-soft hover:shadow-elegant hover:-translate-y-1 transition-smooth flex flex-col">
-                            <div className="flex items-start justify-between gap-3 mb-3">
-                              <div className="h-10 w-10 rounded-lg bg-accent-soft text-accent flex items-center justify-center shrink-0"><BookOpen className="h-5 w-5" /></div>
-                              <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground">{c.units} units</span>
+                      <>
+                        {/* First Semester */}
+                        {firstSemesterCourses.length > 0 && (
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-3">
+                              <h2 className="text-lg md:text-xl font-display font-bold text-foreground">First Semester</h2>
+                              <div className="h-[1px] flex-1 bg-border" />
                             </div>
-                            <div className="text-xs font-semibold text-accent uppercase tracking-wider mb-1">{c.code}</div>
-                            <h3 className="font-display font-semibold text-lg leading-snug mb-2">{c.title}</h3>
-                            {c.description && <p className="text-sm text-muted-foreground leading-relaxed mb-5 flex-1 line-clamp-3">{c.description}</p>}
-                            <div className="flex items-center justify-between pt-4 border-t border-border mt-auto">
-                              <span className="text-xs text-muted-foreground inline-flex items-center gap-1.5">
-                                <FileText className="h-3.5 w-3.5" /> {counts[c.id] ?? 0} materials
-                              </span>
-                              <Button variant="ghost" size="sm" className="h-8" onClick={() => openMaterials(c)}>
-                                <Download className="h-3.5 w-3.5" /> View
-                              </Button>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                              {firstSemesterCourses.map((c) => (
+                                <Card key={c.id} className="p-6 border-border shadow-card-soft hover:shadow-elegant hover:-translate-y-1 transition-smooth flex flex-col">
+                                  <div className="flex items-start justify-between gap-3 mb-3">
+                                    <div className="h-10 w-10 rounded-lg bg-accent-soft text-accent flex items-center justify-center shrink-0"><BookOpen className="h-5 w-5" /></div>
+                                    <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground">{c.units} units</span>
+                                  </div>
+                                  <div className="text-xs font-semibold text-accent uppercase tracking-wider mb-1">{c.code}</div>
+                                  <h3 className="font-display font-semibold text-lg leading-snug mb-2">{c.title}</h3>
+                                  {c.description && <p className="text-sm text-muted-foreground leading-relaxed mb-5 flex-1 line-clamp-3">{c.description}</p>}
+                                  <div className="flex items-center justify-between pt-4 border-t border-border mt-auto">
+                                    <span className="text-xs text-muted-foreground inline-flex items-center gap-1.5">
+                                      <FileText className="h-3.5 w-3.5" /> {counts[c.id] ?? 0} materials
+                                    </span>
+                                    <Button variant="ghost" size="sm" className="h-8" onClick={() => openMaterials(c)}>
+                                      <Download className="h-3.5 w-3.5" /> View
+                                    </Button>
+                                  </div>
+                                </Card>
+                              ))}
                             </div>
-                          </Card>
-                        ))}
-                      </div>
+                          </div>
+                        )}
+
+                        {/* Second Semester */}
+                        {secondSemesterCourses.length > 0 && (
+                          <div className="space-y-4">
+                            <div className="flex items-center gap-3">
+                              <h2 className="text-lg md:text-xl font-display font-bold text-foreground">Second Semester</h2>
+                              <div className="h-[1px] flex-1 bg-border" />
+                            </div>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+                              {secondSemesterCourses.map((c) => (
+                                <Card key={c.id} className="p-6 border-border shadow-card-soft hover:shadow-elegant hover:-translate-y-1 transition-smooth flex flex-col">
+                                  <div className="flex items-start justify-between gap-3 mb-3">
+                                    <div className="h-10 w-10 rounded-lg bg-accent-soft text-accent flex items-center justify-center shrink-0"><BookOpen className="h-5 w-5" /></div>
+                                    <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground">{c.units} units</span>
+                                  </div>
+                                  <div className="text-xs font-semibold text-accent uppercase tracking-wider mb-1">{c.code}</div>
+                                  <h3 className="font-display font-semibold text-lg leading-snug mb-2">{c.title}</h3>
+                                  {c.description && <p className="text-sm text-muted-foreground leading-relaxed mb-5 flex-1 line-clamp-3">{c.description}</p>}
+                                  <div className="flex items-center justify-between pt-4 border-t border-border mt-auto">
+                                    <span className="text-xs text-muted-foreground inline-flex items-center gap-1.5">
+                                      <FileText className="h-3.5 w-3.5" /> {counts[c.id] ?? 0} materials
+                                    </span>
+                                    <Button variant="ghost" size="sm" className="h-8" onClick={() => openMaterials(c)}>
+                                      <Download className="h-3.5 w-3.5" /> View
+                                    </Button>
+                                  </div>
+                                </Card>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </>
                     )}
                   </TabsContent>
                 );

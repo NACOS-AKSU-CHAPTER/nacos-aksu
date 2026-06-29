@@ -11,6 +11,7 @@ interface AuthCtx {
   position: string | null;
   assignedLevel: string | null;
   membershipId: string | null;
+  photoUrl: string | null;
   loading: boolean;
   signOut: () => Promise<void>;
   refreshRoles: () => Promise<void>;
@@ -209,6 +210,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [position, setPosition] = useState<string | null>(null);
   const [assignedLevel, setAssignedLevel] = useState<string | null>(null);
   const [membershipId, setMembershipId] = useState<string | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const fetchRoles = async (uid: string) => {
@@ -217,10 +219,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const fetchPosition = async (uid: string) => {
-    const { data } = await supabase.from("profiles").select("position, assigned_level, membership_id").eq("user_id", uid).single();
+    const { data } = await supabase.from("profiles").select("position, assigned_level, membership_id, photo_url").eq("user_id", uid).single();
     setPosition(data?.position ?? null);
     setAssignedLevel(data?.assigned_level ?? null);
     setMembershipId(data?.membership_id ?? null);
+    setPhotoUrl(data?.photo_url ?? null);
   };
 
   useEffect(() => {
@@ -257,6 +260,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setPosition(null);
     setAssignedLevel(null);
     setMembershipId(null);
+    setPhotoUrl(null);
   };
 
   const refreshRoles = async () => {
@@ -281,6 +285,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         position,
         assignedLevel,
         membershipId,
+        photoUrl,
         loading,
         signOut,
         refreshRoles,
