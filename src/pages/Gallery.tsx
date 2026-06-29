@@ -34,22 +34,17 @@ const Gallery = () => {
     (async () => {
       const { data: al } = await supabase
         .from("gallery_albums")
-        .select("*")
-        .order("event_date", { ascending: false, nullsFirst: false });
-      const list = (al ?? []) as Album[];
+        .select("*, gallery_photos(count)")
+        .order("title", { ascending: true });
+      
+      const list = (al ?? []) as (Album & { gallery_photos?: { count: number }[] })[];
       setAlbums(list);
 
-      // counts per album
-      const entries = await Promise.all(
-        list.map((a) =>
-          supabase
-            .from("gallery_photos")
-            .select("id", { count: "exact", head: true })
-            .eq("album_id", a.id)
-            .then((r) => [a.id, r.count ?? 0] as const),
-        ),
-      );
-      setCounts(Object.fromEntries(entries));
+      const countsMap: Record<string, number> = {};
+      list.forEach((a) => {
+        countsMap[a.id] = a.gallery_photos?.[0]?.count ?? 0;
+      });
+      setCounts(countsMap);
       setLoading(false);
     })();
   }, []);
@@ -90,7 +85,7 @@ const Gallery = () => {
                 >
                   <div className="aspect-[4/3] relative overflow-hidden">
                     {a.cover_url ? (
-                      <img src={a.cover_url} alt={a.title} className="h-full w-full object-cover group-hover:scale-105 transition-smooth" />
+                      <img src={a.cover_url} alt={a.title} loading="lazy" className="h-full w-full object-cover group-hover:scale-105 transition-smooth" />
                     ) : (
                       <div className="h-full w-full bg-gradient-to-br from-primary via-primary-glow to-accent/40 flex items-center justify-center text-primary-foreground">
                         <ImageIcon className="h-12 w-12 opacity-40" />
@@ -134,7 +129,7 @@ const Gallery = () => {
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {photos.map((p) => (
                 <figure key={p.id} className="space-y-1">
-                  <img src={p.photo_url} alt={p.caption ?? ""} className="w-full aspect-square object-cover rounded-lg" />
+                  <img src={p.photo_url} alt={p.caption ?? ""} loading="lazy" className="w-full aspect-square object-cover rounded-lg" />
                   {p.caption && <figcaption className="text-xs text-muted-foreground">{p.caption}</figcaption>}
                 </figure>
               ))}

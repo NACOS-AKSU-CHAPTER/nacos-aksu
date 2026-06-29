@@ -40,7 +40,7 @@ const Gallery = () => {
 
   const load = async () => {
     setLoading(true);
-    const { data } = await supabase.from("gallery_albums").select("*").order("created_at", { ascending: false });
+    const { data } = await supabase.from("gallery_albums").select("*").order("title", { ascending: true });
     setAlbums((data ?? []) as Album[]);
     setLoading(false);
   };
@@ -154,7 +154,7 @@ const Gallery = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {albums.map((a) => (
             <Card key={a.id}>
-              {a.cover_url ? <img src={a.cover_url} alt="" className="h-32 w-full object-cover rounded-t-lg" /> : <div className="h-32 bg-muted rounded-t-lg flex items-center justify-center"><ImageIcon className="h-8 w-8 text-muted-foreground" /></div>}
+              {a.cover_url ? <img src={a.cover_url} alt="" loading="lazy" className="h-32 w-full object-cover rounded-t-lg" /> : <div className="h-32 bg-muted rounded-t-lg flex items-center justify-center"><ImageIcon className="h-8 w-8 text-muted-foreground" /></div>}
               <CardContent className="p-3 space-y-2">
                 <h3 className="font-semibold truncate">{a.title}</h3>
                 {a.event_date && <p className="text-xs text-muted-foreground">{new Date(a.event_date).toLocaleDateString()}</p>}
@@ -182,7 +182,7 @@ const Gallery = () => {
           <div className="grid grid-cols-3 gap-2">
             {photos.map((p) => (
               <div key={p.id} className="relative group">
-                <img src={p.photo_url} alt="" className="aspect-square w-full object-cover rounded" />
+                <img src={p.photo_url} alt="" loading="lazy" className="aspect-square w-full object-cover rounded" />
                 <button
                   onClick={() => removePhoto(p.id)}
                   className="absolute top-1 right-1 h-6 w-6 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition"
