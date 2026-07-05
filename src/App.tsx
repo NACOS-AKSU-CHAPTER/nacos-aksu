@@ -14,6 +14,7 @@ import About from "./pages/About.tsx";
 import Executives from "./pages/Executives.tsx";
 import Studies from "./pages/Studies.tsx";
 import Events from "./pages/Events.tsx";
+import NewsDetail from "./pages/NewsDetail.tsx";
 import Gallery from "./pages/Gallery.tsx";
 import Contact from "./pages/Contact.tsx";
 import Auth from "./pages/Auth.tsx";
@@ -48,6 +49,7 @@ const AppContent = () => {
         <Route path="/executives" element={<Executives />} />
         <Route path="/studies" element={<Studies />} />
         <Route path="/events" element={<Events />} />
+        <Route path="/news/:id" element={<NewsDetail />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/contact" element={<Contact />} />
       </Route>

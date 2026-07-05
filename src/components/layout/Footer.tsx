@@ -1,5 +1,20 @@
 import { Link } from "react-router-dom";
-import { Mail, MapPin, Instagram, Twitter, Facebook } from "lucide-react";
+import { Mail, MapPin, Instagram, Twitter, Facebook, Youtube } from "lucide-react";
+
+const Tiktok = ({ className }: { className?: string }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+  </svg>
+);
 
 export const Footer = () => {
   return (
@@ -14,13 +29,13 @@ export const Footer = () => {
                 className="h-10 w-10 object-contain"
               />
               <div className="leading-tight">
-                <div className="font-display font-bold text-lg">NACOS AKSU</div>
-                <div className="text-xs uppercase tracking-wider opacity-70">Computing Students</div>
+                <div className="font-display font-bold text-lg">NACOS</div>
+                <div className="text-xs uppercase tracking-wider opacity-70">AkwA Ibom State University Chapter</div>
               </div>
             </div>
             <p className="text-sm opacity-80 max-w-md leading-relaxed">
               The official hub of the Nigeria Association of Computing Students,
-              Akwa Ibom State University chapter — uniting students, sharing knowledge,
+              Akwa Ibom State University chapter uniting students, sharing knowledge,
               and building the future of tech in our department.
             </p>
           </div>
@@ -49,14 +64,20 @@ export const Footer = () => {
               </li>
             </ul>
             <div className="flex gap-3 mt-4">
-              <a href="#" aria-label="Instagram" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
+              <a href="https://www.instagram.com/nacos_aksu?igsh=YWdnb2oxZW5nM2Zv" aria-label="Instagram" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href="#" aria-label="Twitter" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
+              <a href="https://x.com/nacos_aksu" aria-label="Twitter" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
                 <Twitter className="h-4 w-4" />
               </a>
-              <a href="#" aria-label="Facebook" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
+              <a href="https://www.facebook.com/share/1H8YhwYnPF/" aria-label="Facebook" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
                 <Facebook className="h-4 w-4" />
+              </a>
+              <a href="https://www.tiktok.com/@nacos_aksu?_r=1&_t=ZS-97mWa7Q8BUW" aria-label="Tiktok" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
+                <Tiktok className="h-4 w-4" />
+              </a>
+              <a href="https://youtube.com/@nacos_aksu?si=geRZ7OCkty8a9uXt" aria-label="Youtube" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
+                <Youtube className="h-4 w-4" />
               </a>
             </div>
           </div>

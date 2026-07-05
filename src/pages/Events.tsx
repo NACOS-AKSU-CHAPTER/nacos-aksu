@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Calendar, MapPin, ArrowRight, Newspaper, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -114,20 +115,36 @@ const Events = () => {
           ) : (
             <div className="grid md:grid-cols-3 gap-5">
               {news.map((n, idx) => (
-                <Card
-                  key={n.id}
-                  className={`overflow-hidden border-border shadow-card-soft hover:shadow-elegant transition-smooth scroll-animate flex flex-col ${newsSection.isVisible ? 'animate-in' : ''}`}
-                  style={{ animationDelay: `${idx * 0.1}s` }}
-                >
-                  {n.cover_url && (
-                    <img src={n.cover_url} alt={n.title} className="aspect-[16/9] w-full object-cover" />
-                  )}
-                  <div className="p-6 flex-1 flex flex-col">
-                    <div className="text-xs text-muted-foreground mb-2">{fmtDate(n.published_at)}</div>
-                    <h3 className="font-display font-semibold text-lg leading-snug mb-2">{n.title}</h3>
-                    {n.excerpt && <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 flex-1">{n.excerpt}</p>}
-                  </div>
-                </Card>
+                <Link to={`/news/${n.id}`} key={n.id} className="group block">
+                  <Card
+                    className={`overflow-hidden border-border shadow-card-soft hover:shadow-elegant transition-smooth scroll-animate flex flex-col h-full ${newsSection.isVisible ? 'animate-in' : ''}`}
+                    style={{ animationDelay: `${idx * 0.1}s` }}
+                  >
+                    {n.cover_url && (
+                      <div className="overflow-hidden aspect-[16/9]">
+                        <img
+                          src={n.cover_url}
+                          alt={n.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </div>
+                    )}
+                    <div className="p-6 flex-1 flex flex-col">
+                      <div className="text-xs text-muted-foreground mb-2">{fmtDate(n.published_at)}</div>
+                      <h3 className="font-display font-semibold text-lg leading-snug mb-2 group-hover:text-accent transition-colors">
+                        {n.title}
+                      </h3>
+                      {n.excerpt && (
+                        <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3 flex-1 mb-4">
+                          {n.excerpt}
+                        </p>
+                      )}
+                      <div className="text-xs font-semibold text-accent inline-flex items-center gap-1 mt-auto">
+                        Read Full Story <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                      </div>
+                    </div>
+                  </Card>
+                </Link>
               ))}
             </div>
           )}
