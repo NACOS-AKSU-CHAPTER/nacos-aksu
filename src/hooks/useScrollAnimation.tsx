@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState, useEffect } from "react";
 
 interface UseScrollAnimationOptions {
     threshold?: number;
@@ -8,33 +8,44 @@ interface UseScrollAnimationOptions {
 
 export const useScrollAnimation = (options: UseScrollAnimationOptions = {}) => {
     const { threshold = 0.1, rootMargin = "0px", triggerOnce = true } = options;
-    const ref = useRef<HTMLDivElement>(null);
     const [isVisible, setIsVisible] = useState(false);
+    const observerRef = useRef<IntersectionObserver | null>(null);
 
-    useEffect(() => {
-        const element = ref.current;
-        if (!element) return;
+    const ref = useCallback((node: HTMLElement | null) => {
+        // Disconnect any existing observer
+        if (observerRef.current) {
+            observerRef.current.disconnect();
+            observerRef.current = null;
+        }
 
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setIsVisible(true);
-                    if (triggerOnce) {
-                        observer.unobserve(element);
+        if (node) {
+            const observer = new IntersectionObserver(
+                ([entry]) => {
+                    if (entry.isIntersecting) {
+                        setIsVisible(true);
+                        if (triggerOnce) {
+                            observer.unobserve(node);
+                        }
+                    } else if (!triggerOnce) {
+                        setIsVisible(false);
                     }
-                } else if (!triggerOnce) {
-                    setIsVisible(false);
-                }
-            },
-            { threshold, rootMargin }
-        );
+                },
+                { threshold, rootMargin }
+            );
 
-        observer.observe(element);
-
-        return () => {
-            observer.disconnect();
-        };
+            observer.observe(node);
+            observerRef.current = observer;
+        }
     }, [threshold, rootMargin, triggerOnce]);
+
+    // Cleanup observer on unmount
+    useEffect(() => {
+        return () => {
+            if (observerRef.current) {
+                observerRef.current.disconnect();
+            }
+        };
+    }, []);
 
     return { ref, isVisible };
 };
