@@ -30,7 +30,7 @@ export const Footer = () => {
               />
               <div className="leading-tight">
                 <div className="font-display font-bold text-lg">NACOS</div>
-                <div className="text-xs uppercase tracking-wider opacity-70">AkwA Ibom State University Chapter</div>
+                <div className="text-xs uppercase tracking-wider opacity-70">Akwa Ibom State University Chapter</div>
               </div>
             </div>
             <p className="text-sm opacity-80 max-w-md leading-relaxed">
@@ -64,19 +64,19 @@ export const Footer = () => {
               </li>
             </ul>
             <div className="flex gap-3 mt-4">
-              <a href="https://www.instagram.com/nacos_aksu?igsh=YWdnb2oxZW5nM2Zv" aria-label="Instagram" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
+              <a href="https://www.instagram.com/nacos_aksu?igsh=YWdnb2oxZW5nM2Zv" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href="https://x.com/nacos_aksu" aria-label="Twitter" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
+              <a href="https://x.com/nacos_aksu" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
                 <Twitter className="h-4 w-4" />
               </a>
-              <a href="https://www.facebook.com/share/1H8YhwYnPF/" aria-label="Facebook" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
+              <a href="https://www.facebook.com/share/1H8YhwYnPF/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
                 <Facebook className="h-4 w-4" />
               </a>
-              <a href="https://www.tiktok.com/@nacos_aksu?_r=1&_t=ZS-97mWa7Q8BUW" aria-label="Tiktok" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
+              <a href="https://www.tiktok.com/@nacos_aksu?_r=1&_t=ZS-97mWa7Q8BUW" target="_blank" rel="noopener noreferrer" aria-label="Tiktok" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
                 <Tiktok className="h-4 w-4" />
               </a>
-              <a href="https://youtube.com/@nacos_aksu?si=geRZ7OCkty8a9uXt" aria-label="Youtube" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
+              <a href="https://youtube.com/@nacos_aksu?si=geRZ7OCkty8a9uXt" target="_blank" rel="noopener noreferrer" aria-label="Youtube" className="h-9 w-9 inline-flex items-center justify-center rounded-full bg-primary-foreground/10 hover:bg-accent hover:text-accent-foreground transition-smooth">
                 <Youtube className="h-4 w-4" />
               </a>
             </div>

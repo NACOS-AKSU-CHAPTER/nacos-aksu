@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, BookOpen, Calendar, Users, Sparkles, GraduationCap, Image as ImageIcon } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowRight, BookOpen, Calendar, Users, Sparkles, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { HeroLogoParticles } from "@/components/hero/HeroLogoParticles";
 import heroBg from "@/assets/hero-bg.jpg";
 
 const features = [
@@ -31,11 +33,6 @@ const formatRelative = (iso: string) => {
 };
 
 const Index = () => {
-  const [stats, setStats] = useState({ members: 0, events: 0, courses: 0, execs: 0 });
-  const [featured, setFeatured] = useState<FeaturedEvent | null>(null);
-  const [news, setNews] = useState<NewsItem[]>([]);
-  const [photos, setPhotos] = useState<Photo[]>([]);
-
   const featuresSection = useScrollAnimation();
   const featuredSection = useScrollAnimation();
   const photosSection = useScrollAnimation();
@@ -43,7 +40,11 @@ const Index = () => {
 
   useEffect(() => {
     document.title = "NACOS AKSU — Department of Computing";
-    (async () => {
+  }, []);
+
+  const { data: homeData, isLoading: isHomeLoading } = useQuery({
+    queryKey: ["home-overview"],
+    queryFn: async () => {
       const [m, ev, co, ex, fe, ne, ph] = await Promise.all([
         supabase.from("membership_signups").select("id", { count: "exact", head: true }),
         supabase.from("events").select("id", { count: "exact", head: true }).eq("is_published", true),
@@ -53,12 +54,25 @@ const Index = () => {
         supabase.from("news").select("id, title, slug, excerpt, published_at").eq("is_published", true).order("published_at", { ascending: false }).limit(3),
         supabase.from("gallery_photos").select("id, photo_url").order("created_at", { ascending: false }).limit(4),
       ]);
-      setStats({ members: m.count ?? 0, events: ev.count ?? 0, courses: co.count ?? 0, execs: ex.count ?? 0 });
-      setFeatured(fe.data as any);
-      setNews((ne.data ?? []) as NewsItem[]);
-      setPhotos((ph.data ?? []) as Photo[]);
-    })();
-  }, []);
+
+      return {
+        stats: {
+          members: m.count ?? 0,
+          events: ev.count ?? 0,
+          courses: co.count ?? 0,
+          execs: ex.count ?? 0,
+        },
+        featured: (fe.data ?? null) as FeaturedEvent | null,
+        news: (ne.data ?? []) as NewsItem[],
+        photos: (ph.data ?? []) as Photo[],
+      };
+    },
+  });
+
+  const stats = homeData?.stats ?? { members: 0, events: 0, courses: 0, execs: 0 };
+  const featured = homeData?.featured ?? null;
+  const news = homeData?.news ?? [];
+  const photos = homeData?.photos ?? [];
 
   const statCards = [
     { label: "Members", value: stats.members },
@@ -70,31 +84,41 @@ const Index = () => {
   return (
     <>
       <section className="relative overflow-hidden gradient-hero text-primary-foreground">
-        <div className="absolute inset-0 opacity-40 mix-blend-overlay bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} aria-hidden />
+        <div className="absolute inset-0 opacity-25 bg-cover bg-center" style={{ backgroundImage: `url(${heroBg})` }} aria-hidden />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-primary/40" aria-hidden />
 
-        <div className="relative container mx-auto container-px py-20 md:py-32">
-          <div className="max-w-3xl animate-fade-in-up">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-foreground/10 backdrop-blur text-xs font-medium uppercase tracking-wider mb-6 border border-primary-foreground/20">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
-              Nigeria Association of Computing Students • AKSU
+        <div className="relative container mx-auto container-px py-16 md:py-28">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-6 items-center">
+            <div className="lg:col-span-6 max-w-3xl animate-fade-in-up">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-foreground/10 backdrop-blur text-xs font-medium uppercase tracking-wider mb-6 border border-primary-foreground/20">
+                <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
+                Nigeria Association of Computing Students • AKSU
+              </div>
+              <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] text-balance">
+                Where computing students <span className="text-accent">build, learn,</span> and lead.
+              </h1>
+              <p className="mt-6 text-lg md:text-xl opacity-85 max-w-2xl leading-relaxed">
+                Department of Computer Sciences.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button asChild variant="hero" size="lg"><Link to="/contact">Join NACOS <ArrowRight className="h-4 w-4" /></Link></Button>
+                <Button asChild variant="outlineLight" size="lg"><Link to="/studies"><BookOpen className="h-4 w-4" /> Explore Courses</Link></Button>
+              </div>
             </div>
-            <h1 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] text-balance">
-              Where computing students <span className="text-accent">build, learn,</span> and lead.
-            </h1>
-            <p className="mt-6 text-lg md:text-xl opacity-85 max-w-2xl leading-relaxed">
-              The official home of NACOS, Akwa Ibom State University chapter — your hub for courses, materials, events, and the people moving our department forward.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild variant="hero" size="lg"><Link to="/contact">Join NACOS <ArrowRight className="h-4 w-4" /></Link></Button>
-              <Button asChild variant="outlineLight" size="lg"><Link to="/studies"><BookOpen className="h-4 w-4" /> Explore Courses</Link></Button>
+
+            <div className="lg:col-span-6 flex items-center justify-center">
+              <HeroLogoParticles className="w-full max-w-[640px] h-[400px] sm:h-[480px] lg:h-[600px]" />
             </div>
           </div>
 
-          <div className="relative mt-16 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="relative mt-14 grid grid-cols-2 md:grid-cols-4 gap-4">
             {statCards.map((s) => (
               <div key={s.label} className="rounded-xl bg-primary-foreground/5 backdrop-blur border border-primary-foreground/10 p-5 text-center">
-                <div className="font-display text-3xl md:text-4xl font-bold text-accent">{s.value}</div>
+                {isHomeLoading ? (
+                  <div className="h-9 md:h-10 w-16 mx-auto rounded bg-primary-foreground/15 animate-pulse" />
+                ) : (
+                  <div className="font-display text-3xl md:text-4xl font-bold text-accent">{s.value}</div>
+                )}
                 <div className="mt-1 text-xs uppercase tracking-wider opacity-75">{s.label}</div>
               </div>
             ))}
@@ -163,15 +187,16 @@ const Index = () => {
 
               <div className="space-y-5">
                 {news.length > 0 ? news.map((n, idx) => (
-                  <Card
-                    key={n.id}
-                    className={`p-5 border-border shadow-card-soft hover:shadow-elegant transition-smooth scroll-animate-right ${featuredSection.isVisible ? 'animate-in' : ''}`}
-                    style={{ animationDelay: `${idx * 0.15}s` }}
-                  >
-                    <div className="text-xs text-muted-foreground mb-2">{formatRelative(n.published_at)}</div>
-                    <h4 className="font-display font-semibold leading-snug">{n.title}</h4>
-                    {n.excerpt && <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{n.excerpt}</p>}
-                  </Card>
+                  <Link key={n.id} to={`/news/${n.id}`} className="block group">
+                    <Card
+                      className={`p-5 border-border shadow-card-soft hover:shadow-elegant hover:border-accent/50 transition-smooth scroll-animate-right ${featuredSection.isVisible ? 'animate-in' : ''}`}
+                      style={{ animationDelay: `${idx * 0.15}s` }}
+                    >
+                      <div className="text-xs text-muted-foreground mb-2">{formatRelative(n.published_at)}</div>
+                      <h4 className="font-display font-semibold leading-snug group-hover:text-accent transition-smooth">{n.title}</h4>
+                      {n.excerpt && <p className="text-sm text-muted-foreground mt-2 line-clamp-2">{n.excerpt}</p>}
+                    </Card>
+                  </Link>
                 )) : (
                   <Card className="p-5 text-center border-dashed text-muted-foreground text-sm">No news posted yet.</Card>
                 )}
@@ -196,10 +221,11 @@ const Index = () => {
                 <Link
                   key={p.id}
                   to="/gallery"
+                  aria-label={`View community moment ${idx + 1} in gallery`}
                   className={`aspect-square rounded-xl overflow-hidden shadow-card-soft hover:scale-[1.02] transition-smooth scroll-animate-scale ${photosSection.isVisible ? 'animate-in' : ''}`}
                   style={{ animationDelay: `${idx * 0.1}s` }}
                 >
-                  <img src={p.photo_url} alt="" className="h-full w-full object-cover" />
+                  <img src={p.photo_url} alt={`NACOS AKSU community moment ${idx + 1}`} className="h-full w-full object-cover" loading="lazy" />
                 </Link>
               ))}
             </div>
