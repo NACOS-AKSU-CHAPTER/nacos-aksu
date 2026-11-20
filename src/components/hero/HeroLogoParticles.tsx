@@ -45,6 +45,7 @@ export const HeroLogoParticles = ({ className = "" }: HeroLogoParticlesProps) =>
     let isVisible = true;
     let width = 0;
     let height = 0;
+    let boxScale = 0;
     let dpr = 1;
     let particles: Particle[] = [];
     let isLoaded = false;
@@ -61,14 +62,16 @@ export const HeroLogoParticles = ({ className = "" }: HeroLogoParticlesProps) =>
     let currentRotY = 0;
 
     const resize = () => {
-      const rect = container.getBoundingClientRect();
-      const nextWidth = Math.max(240, rect.width);
-      const nextHeight = Math.max(240, rect.height);
-      const prevScale = Math.min(width, height);
-      const nextScale = Math.min(nextWidth, nextHeight);
+      const containerRect = container.getBoundingClientRect();
+      const canvasRect = canvas.getBoundingClientRect();
+      const nextWidth = Math.max(240, canvasRect.width);
+      const nextHeight = Math.max(240, canvasRect.height);
+      const prevScale = boxScale;
+      const nextScale = Math.max(240, Math.min(containerRect.width, containerRect.height));
 
       width = nextWidth;
       height = nextHeight;
+      boxScale = nextScale;
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
@@ -95,7 +98,7 @@ export const HeroLogoParticles = ({ className = "" }: HeroLogoParticlesProps) =>
       const { data } = offCtx.getImageData(0, 0, sampleSize, sampleSize);
 
       const half = sampleSize / 2;
-      const spreadScale = Math.min(width, height) * 0.98;
+      const spreadScale = boxScale * 0.96;
       const step = 2;
       const nextParticles: Particle[] = [];
 
@@ -267,7 +270,7 @@ export const HeroLogoParticles = ({ className = "" }: HeroLogoParticlesProps) =>
         const sinX = Math.sin(currentRotX);
 
         // Soft radial aura behind the 3D logo
-        const auraRadius = Math.min(width, height) * 0.46;
+        const auraRadius = boxScale * 0.46;
         const aura = ctx.createRadialGradient(cx, cy, auraRadius * 0.1, cx, cy, auraRadius);
         aura.addColorStop(0, "rgba(74, 222, 128, 0.14)");
         aura.addColorStop(0.6, "rgba(34, 197, 94, 0.05)");
@@ -432,7 +435,10 @@ export const HeroLogoParticles = ({ className = "" }: HeroLogoParticlesProps) =>
       className={`relative flex items-center justify-center select-none ${className}`}
       aria-label="Interactive 3D NACOS AKSU logo particle visualization"
     >
-      <canvas ref={canvasRef} className="block w-full h-full cursor-pointer touch-pan-y" />
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-[-25%] w-[150%] h-[150%] max-w-none cursor-pointer touch-pan-y"
+      />
     </div>
   );
 };

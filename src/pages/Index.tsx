@@ -89,7 +89,7 @@ const Index = () => {
 
         <div className="relative container mx-auto container-px py-16 md:py-28">
           <div className="grid lg:grid-cols-12 gap-8 lg:gap-6 items-center">
-            <div className="lg:col-span-6 max-w-3xl animate-fade-in-up">
+            <div className="relative z-10 lg:col-span-6 max-w-3xl animate-fade-in-up">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-foreground/10 backdrop-blur text-xs font-medium uppercase tracking-wider mb-6 border border-primary-foreground/20">
                 <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
                 Nigeria Association of Computing Students • AKSU

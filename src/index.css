@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -110,7 +108,7 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Candara', 'Calibri', 'Segoe UI', system-ui, sans-serif;
   }
 
   h1,
@@ -119,7 +117,7 @@
   h4,
   h5,
   h6 {
-    font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+    font-family: 'Candara', 'Calibri', 'Segoe UI', system-ui, sans-serif;
     @apply tracking-tight;
   }
 }
